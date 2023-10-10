@@ -9,7 +9,8 @@
     {
       packages."${system}" = rec {
         jdtls = pkgs.callPackage ./jdtls.nix {};
-        default = jdtls;
+        devcontainer = pkgs.callPackage ./devcontainer/devcontainer.nix {};
+        default = devcontainer;
       };
     };
 }

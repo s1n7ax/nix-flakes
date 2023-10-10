@@ -1,9 +1,8 @@
-{
-  stdenv,
-  fetchurl,
-  jdk19_headless,
-  python3,
-  ...
+{ stdenv
+, fetchurl
+, jdk19_headless
+, python3
+, ...
 }: stdenv.mkDerivation {
   pname = "jdtls";
   version = "1.28.0";
