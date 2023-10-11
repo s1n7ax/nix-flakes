@@ -4,7 +4,7 @@
 , makeWrapper
 , nodejs
 , fetchYarnDeps
-,
+, gnutar
 }:
 mkYarnPackage rec {
   pname = "devcontainer";
@@ -29,8 +29,30 @@ mkYarnPackage rec {
   buildPhase = ''
     runHook preBuild
     export HOME=$(mktemp -d)
+    
+    yarn --offline clean-dist
+    yarn --offline definitions
     yarn --offline compile-prod
+    yarn --offline store-packagejson
+    yarn --offline patch-packagejson
+    yarn --offline pack -f package.tgz
+
+    ${gnutar}/bin/tar xf package.tgz
+
     runHook postBuild
+  '';
+
+  installPhase = ''
+    mkdir -p $out/bin
+
+    mv package/* $out
+
+    cat > $out/bin/devcontainer <<EOL
+    #!/usr/bin/env bash
+    node $out/devcontainer.js "\$@"
+    EOL
+
+    chmod +x "$out/bin/devcontainer"
   '';
 
   postInstall = ''
