@@ -8,8 +8,8 @@
     in
     {
       packages."${system}" = rec {
-        jdtls = pkgs.callPackage ./jdtls.nix {};
-        devcontainer = pkgs.callPackage ./devcontainer/devcontainer.nix {};
+        jdtls = pkgs.callPackage ./jdtls.nix { };
+        devcontainer = pkgs.callPackage ./devcontainer/devcontainer.nix { };
         default = devcontainer;
       };
     };
