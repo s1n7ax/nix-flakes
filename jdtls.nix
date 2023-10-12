@@ -1,7 +1,9 @@
 { stdenv
 , fetchurl
-, jdk19_headless
+, makeWrapper
+, jdk17_headless
 , python3
+, lib
 , ...
 }: stdenv.mkDerivation {
   pname = "jdtls";
@@ -12,7 +14,7 @@
     sha256 = "zr17RSPJz0LiUxzIAZ+fmvPnPK12K6pe3ZP/Hj8+7CY=";
   };
 
-  buildInputs = [ jdk19_headless ];
+  nativeBuildInputs = [ makeWrapper ];
 
   unpackPhase = ''
     mkdir -p $out/share
@@ -27,18 +29,14 @@
     cat > $out/bin/jdtls <<EOL
     #!/usr/bin/env bash
 
-    echo 'Starting JDTLS'
-
-    # setting paths
-    PATH="${jdk19_headless}/bin:${python3}/bin:$PATH"
-    JAVA_HOME="${jdk19_headless}"
-
     $out/share/bin/jdtls
     EOL
   '';
 
   fixupPhase = ''
-    ls -l 
     chmod u+x $out/bin/jdtls
+    wrapProgram $out/bin/jdtls \
+      --prefix PATH : ${lib.makeBinPath [ jdk17_headless python3 ]} \
+      --prefix JAVA_HOME : "${jdk17_headless}/lib/openjdk"
   '';
 }
