@@ -51,12 +51,12 @@ mkYarnPackage rec {
     #!/usr/bin/env bash
     node $out/devcontainer.js "\$@"
     EOL
-
-    chmod +x "$out/bin/devcontainer"
   '';
+  fixupPhase = ''
+    chmod +x "$out/bin/devcontainer"
 
-  postInstall = ''
-    wrapProgram "$out/bin/devcontainer" --prefix PATH : "${nodejs}/bin"
+    wrapProgram $out/bin/devcontainer \
+      --prefix PATH : ${lib.makeBinPath [ nodejs ]}
   '';
 
   doDist = false;
