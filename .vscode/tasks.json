@@ -1,0 +1,16 @@
+{
+	"tasks": [
+		{
+			"label": "Nix Flake Build",
+			"type": "shell",
+			"group": "build",
+			"command": "nix build -L ."
+		},
+		{
+			"label": "Nix Flake Run",
+			"type": "shell",
+			"group": "build",
+			"command": "nix run -L ."
+		}
+	]
+}
