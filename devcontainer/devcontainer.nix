@@ -1,17 +1,16 @@
 { lib
 , mkYarnPackage
 , fetchFromGitHub
-, makeWrapper
-, nodejs
+, nodejs_18
 , fetchYarnDeps
-, gnutar
+, makeWrapper
 }:
 mkYarnPackage rec {
   pname = "devcontainer";
   version = "0.52.0";
 
   src = fetchFromGitHub {
-    owner = "devcontainers";
+    owner = "s1n7ax";
     repo = "cli";
     rev = "v${version}";
     sha256 = "sha256-h1xTXMh0ZDeDfkAS9TDq12mG9dZaVOLn78R80dRlPPg=";
@@ -28,35 +27,37 @@ mkYarnPackage rec {
 
   buildPhase = ''
     runHook preBuild
-    export HOME=$(mktemp -d)
-    
-    yarn --offline clean-dist
-    yarn --offline definitions
-    yarn --offline compile-prod
-    yarn --offline store-packagejson
-    yarn --offline patch-packagejson
-    yarn --offline pack -f package.tgz
 
-    ${gnutar}/bin/tar xf package.tgz
+    # without home, tasks are passing but they does not do what it supposed to
+    export HOME=$(mktemp -d)
+
+    rm -rf deps/@devcontainers/cli/node_modules
+    cp -r node_modules deps/@devcontainers/cli/node_modules
+
+    yarn run --offline package
+
+    cp deps/@devcontainers/cli/devcontainers-cli-${version}.tgz .
 
     runHook postBuild
   '';
 
   installPhase = ''
     mkdir -p $out/bin
-
-    mv package/* $out
+    tar xf devcontainers-cli-${version}.tgz
+    cp -r package/* $out
 
     cat > $out/bin/devcontainer <<EOL
     #!/usr/bin/env bash
-    node $out/devcontainer.js "\$@"
+    node --version
+    node "$out/devcontainer.js" "\$@"
     EOL
   '';
+
   fixupPhase = ''
     chmod +x "$out/bin/devcontainer"
 
     wrapProgram $out/bin/devcontainer \
-      --prefix PATH : ${lib.makeBinPath [ nodejs ]}
+      --prefix PATH : ${lib.makeBinPath [ nodejs_18 ]}
   '';
 
   doDist = false;
