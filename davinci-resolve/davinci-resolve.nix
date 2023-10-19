@@ -2,6 +2,7 @@
 , lib
 , cacert
 , curl
+, axel
 , runCommandLocal
 , unzip
 , appimage-run
@@ -51,7 +52,7 @@ let
 
           impureEnvVars = lib.fetchers.proxyImpureEnvVars;
 
-          nativeBuildInputs = [ curl ];
+          nativeBuildInputs = [ curl axel ];
 
           # ENV VARS
           SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
@@ -101,18 +102,16 @@ let
           --compressed \
           "$SITEURL")
 
-        curl \
-          --connect-timeout 300 \
-          --retry 30 \
-          --retry-delay 0 \
-          --retry-max-time 30 \
+        axel \
+          --num-connections=10 \
           --header "Upgrade-Insecure-Requests: 1" \
           --header "$USERAGENT" \
           --header "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" \
           --header "Accept-Language: en-US,en;q=0.9" \
-          --compressed \
-          "$RESOLVEURL" \
-          > $out
+          --verbose \
+          --insecure \
+          --output $out" \
+          "$RESOLVEURL"
       '';
 
       # The unpack phase won't generate a directory
