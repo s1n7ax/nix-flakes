@@ -10,6 +10,7 @@
       packages."${system}" = rec {
         jdtls = pkgs.callPackage ./jdtls.nix { };
         devcontainer = pkgs.callPackage ./devcontainer/devcontainer.nix { };
+        davinci-resolve = pkgs.callPackage ./davinci-resolve/davinci-resolve.nix { };
         default = devcontainer;
       };
     };
