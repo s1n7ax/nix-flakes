@@ -83,7 +83,6 @@ let
         } ''
         RESOLVEURL=$(curl \
           --connect-timeout 300 \
-          --max-time 30 \
           --retry 30 \
           --retry-delay 0 \
           --retry-max-time 30 \
@@ -104,7 +103,6 @@ let
 
         curl \
           --connect-timeout 300 \
-          --max-time 30 \
           --retry 30 \
           --retry-delay 0 \
           --retry-max-time 30 \
