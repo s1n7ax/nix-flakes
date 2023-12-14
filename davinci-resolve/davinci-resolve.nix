@@ -119,7 +119,7 @@ let
           --header "Accept-Language: en-US,en;q=0.9" \
           --verbose \
           --insecure \
-          --output $out" \
+          --output $out \
           "$RESOLVEURL"
       '';
 
