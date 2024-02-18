@@ -1,16 +1,10 @@
-{ lib
-, mkYarnPackage
-, fetchFromGitHub
-, nodejs_18
-, fetchYarnDeps
-, makeWrapper
-}:
+{ lib, mkYarnPackage, fetchFromGitHub, nodejs_18, fetchYarnDeps, makeWrapper }:
 mkYarnPackage rec {
   pname = "devcontainer";
   version = "0.52.0";
 
   src = fetchFromGitHub {
-    owner = "s1n7ax";
+    owner = "devcontainers";
     repo = "cli";
     rev = "v${version}";
     sha256 = "sha256-h1xTXMh0ZDeDfkAS9TDq12mG9dZaVOLn78R80dRlPPg=";
@@ -67,7 +61,8 @@ mkYarnPackage rec {
     description = "Development inside containers using devcontainer";
     homepage = "https://github.com/devcontainers/cli";
     license = licenses.mit;
-    hangelog = "https://github.com/devcontainers/cli/blob/${src.rev}/CHANGELOG.md";
+    hangelog =
+      "https://github.com/devcontainers/cli/blob/${src.rev}/CHANGELOG.md";
     platforms = with platforms; linux ++ darwin;
     maintainers = with maintainers; [ s1n7ax ];
   };
